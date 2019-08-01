@@ -41,20 +41,11 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.shorts.Short2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.shorts.ShortArrayList;
 import it.unimi.dsi.fastutil.shorts.ShortOpenHashSet;
+import org.gephi.graph.api.types.*;
 import org.gephi.graph.impl.TimestampsParser;
 import org.gephi.graph.impl.IntervalsParser;
 import org.gephi.graph.impl.FormattingAndParsingUtils;
-import org.gephi.graph.api.types.TimestampMap;
-import org.gephi.graph.api.types.TimestampShortMap;
-import org.gephi.graph.api.types.TimestampLongMap;
-import org.gephi.graph.api.types.TimestampSet;
-import org.gephi.graph.api.types.TimestampCharMap;
-import org.gephi.graph.api.types.TimestampDoubleMap;
-import org.gephi.graph.api.types.TimestampBooleanMap;
-import org.gephi.graph.api.types.TimestampFloatMap;
-import org.gephi.graph.api.types.TimestampStringMap;
-import org.gephi.graph.api.types.TimestampByteMap;
-import org.gephi.graph.api.types.TimestampIntegerMap;
+
 import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -67,19 +58,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import org.gephi.graph.api.types.IntervalBooleanMap;
-import org.gephi.graph.api.types.IntervalByteMap;
-import org.gephi.graph.api.types.IntervalCharMap;
-import org.gephi.graph.api.types.IntervalDoubleMap;
-import org.gephi.graph.api.types.IntervalFloatMap;
-import org.gephi.graph.api.types.IntervalIntegerMap;
-import org.gephi.graph.api.types.IntervalLongMap;
-import org.gephi.graph.api.types.IntervalMap;
-import org.gephi.graph.api.types.IntervalSet;
-import org.gephi.graph.api.types.IntervalShortMap;
-import org.gephi.graph.api.types.IntervalStringMap;
-import org.gephi.graph.api.types.TimeMap;
-import org.gephi.graph.api.types.TimeSet;
+
 import org.gephi.graph.impl.ArraysParser;
 import org.gephi.graph.impl.GraphStoreConfiguration;
 import org.joda.time.DateTimeZone;
@@ -136,6 +115,7 @@ public class AttributeUtils {
         supportedTypes.add(BigDecimal.class);
         supportedTypes.add(Character.class);
         supportedTypes.add(char.class);
+        supportedTypes.add(Base64.class);
 
         // Objects
         supportedTypes.add(String.class);
@@ -389,6 +369,8 @@ public class AttributeUtils {
                 throw new IllegalArgumentException("The string has a length > 1");
             }
             return str.charAt(0);
+        } else if (typeClass.equals(Base64.class)) {
+            return Base64.fromDecodeString(str);
         }
 
         // Interval types:
@@ -891,6 +873,13 @@ public class AttributeUtils {
                 .equals(IntervalIntegerMap.class) || type.equals(IntervalFloatMap.class) || type
                 .equals(IntervalDoubleMap.class) || type.equals(IntervalLongMap.class) || type
                 .equals(IntervalShortMap.class) || type.equals(IntervalByteMap.class);
+    }
+
+    public static boolean isBase64Type(Class type) {
+        if (!isSupported(type)) {
+            throw new IllegalArgumentException("Unsupported type " + type.getCanonicalName());
+        }
+        return type.equals(Base64.class);
     }
 
     /**
